@@ -1,0 +1,40 @@
+diff -urN nexus5x-stock/ramdisk/fstab.bullhead nexus5x-modified/ramdisk/fstab.bullhead
+--- nexus5x-stock/ramdisk/fstab.bullhead	2017-10-05 11:22:19.335450000 +0800
++++ nexus5x-modified/ramdisk/fstab.bullhead	2017-10-05 11:28:22.682613700 +0800
+@@ -3,9 +3,9 @@
+ # The filesystem that contains the filesystem checker binary (typically /system) cannot
+ # specify MF_CHECK, and must come before any filesystems that do specify MF_CHECK
+ 
+-/dev/block/platform/soc.0/f9824900.sdhci/by-name/system       /system         ext4    ro,barrier=1,inode_readahead_blks=8                             wait,verify=/dev/block/platform/soc.0/f9824900.sdhci/by-name/metadata
+-/dev/block/platform/soc.0/f9824900.sdhci/by-name/vendor       /vendor         ext4    ro,barrier=1,inode_readahead_blks=8                             wait,verify=/dev/block/platform/soc.0/f9824900.sdhci/by-name/metadata
+-/dev/block/platform/soc.0/f9824900.sdhci/by-name/userdata     /data           ext4    noatime,nosuid,nodev,barrier=1,data=ordered,nomblk_io_submit,noauto_da_alloc,errors=panic,inode_readahead_blks=8 wait,check,forcefdeorfbe=/dev/block/platform/soc.0/f9824900.sdhci/by-name/metadata
++/dev/block/platform/soc.0/f9824900.sdhci/by-name/system       /system         ext4    ro,barrier=1,inode_readahead_blks=8                             wait
++/dev/block/platform/soc.0/f9824900.sdhci/by-name/vendor       /vendor         ext4    ro,barrier=1,inode_readahead_blks=8                             wait
++/dev/block/platform/soc.0/f9824900.sdhci/by-name/userdata     /data           ext4    noatime,nosuid,nodev,barrier=1,data=ordered,nomblk_io_submit,noauto_da_alloc,errors=panic,inode_readahead_blks=8 wait,check
+ /dev/block/platform/soc.0/f9824900.sdhci/by-name/cache        /cache          ext4    noatime,nosuid,nodev,barrier=1,data=ordered,nomblk_io_submit,noauto_da_alloc,errors=panic wait,check
+ /dev/block/platform/soc.0/f9824900.sdhci/by-name/persist      /persist        ext4    noatime,nosuid,nodev,barrier=1,data=ordered,nodelalloc,nomblk_io_submit,errors=panic wait,notrim
+ /dev/block/platform/soc.0/f9824900.sdhci/by-name/modem        /firmware       vfat    ro,shortname=lower,uid=1000,gid=1000,dmask=227,fmask=337,context=u:object_r:firmware_file:s0        wait
+diff -urN nexus5x-stock/ramdisk/init.bullhead.rc nexus5x-modified/ramdisk/init.bullhead.rc
+--- nexus5x-stock/ramdisk/init.bullhead.rc	2017-10-05 11:22:19.585471300 +0800
++++ nexus5x-modified/ramdisk/init.bullhead.rc	2017-10-05 11:34:30.089525500 +0800
+@@ -108,11 +108,11 @@
+     # update foreground cpuset now that processors are up
+     # foreground gets all CPUs except CPU 3
+     # CPU 3 is reserved for the top app
+-    write /dev/cpuset/foreground/cpus 0-2,4-5
+-    write /dev/cpuset/foreground/boost/cpus 4-5
++    write /dev/cpuset/foreground/cpus 0-2
++    write /dev/cpuset/foreground/boost/cpus 2-3
+     write /dev/cpuset/background/cpus 0
+     write /dev/cpuset/system-background/cpus 0-2
+-    write /dev/cpuset/top-app/cpus 0-5
++    write /dev/cpuset/top-app/cpus 0-3
+ 
+     # Bluetooth
+     chown bluetooth net_bt /sys/class/rfkill/rfkill0/type
+diff -urN nexus5x-stock/split_img/boot.img-cmdline nexus5x-modified/split_img/boot.img-cmdline
+--- nexus5x-stock/split_img/boot.img-cmdline	2017-10-05 11:22:16.760164300 +0800
++++ nexus5x-modified/split_img/boot.img-cmdline	2017-10-05 11:35:40.519817900 +0800
+@@ -1 +1 @@
+-console=ttyHSL0,115200,n8 androidboot.hardware=bullhead boot_cpus=0-5 lpm_levels.sleep_disabled=1 msm_poweroff.download_mode=0 loop.max_part=7 buildvariant=user
++console=ttyHSL0,115200,n8 androidboot.hardware=bullhead boot_cpus=0-3 maxcpus=4 lpm_levels.sleep_disabled=1 msm_poweroff.download_mode=0 loop.max_part=7 buildvariant=user
